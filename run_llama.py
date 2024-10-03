@@ -6,27 +6,23 @@ from huggingface_hub import login
 login(token='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')
 
 
-model_id = "meta-llama/Meta-Llama-3-8B"
+model_id = "meta-llama/Meta-Llama-3-8B-Instruct"
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"Device is: {device}")
 
 
 bnb_config = BitsAndBytesConfig(
-    load_in_8bit=True,
-    bnb_8bit_use_double_quant=True,
-    bnb_8bit_quant_type='nf4',
-    bnb_8bit_compute_dtype=torch.float16
+    load_in_4bit=True,
 )
 
-
-tokenizer = AutoTokenizer.from_pretrained(model_id, cache_dir="F:/huggingface")
+tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForCausalLM.from_pretrained(
     model_id,
     quantization_config=bnb_config,
     device_map="auto",
     torch_dtype=torch.float16,
-    cache_dir="F:/huggingface"
 )
 
 
