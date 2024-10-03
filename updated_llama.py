@@ -1,6 +1,7 @@
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from huggingface_hub import login
+import os
 
 login(token='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')
 
@@ -9,11 +10,16 @@ model_path = "F:/huggingface_cache/hub/finetuned_llama"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Device is: {device}")
 
+offload_dir = "F:/huggingface_cache/offload"
+
+os.makedirs(offload_dir, exist_ok=True)
+
 tokenizer = AutoTokenizer.from_pretrained(model_path)
 model = AutoModelForCausalLM.from_pretrained(
     model_path,
     device_map="auto",
     torch_dtype=torch.float16,
+    offload_dir=offload_dir,
 )
 
 model.eval()
