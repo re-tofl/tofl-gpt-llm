@@ -1,7 +1,7 @@
 import requests
 import time
 
-API_URL = "http://localhost:8000"
+API_URL = "http://85.143.167.11:8000"
 
 def ask_question(question):
     response = requests.post(
