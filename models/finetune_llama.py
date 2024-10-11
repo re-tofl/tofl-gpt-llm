@@ -42,7 +42,7 @@ tokenized_dataset = dataset.map(lambda examples: tokenizer(examples['text'], tru
 data_collator = DataCollatorForLanguageModeling(tokenizer, mlm=False)
 
 training_args = TrainingArguments(
-    output_dir="./results",
+    output_dir="../results",
     overwrite_output_dir=True,
     num_train_epochs=3,
     per_device_train_batch_size=1,
