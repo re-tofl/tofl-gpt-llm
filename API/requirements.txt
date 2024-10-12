@@ -1,4 +1,5 @@
 fastapi
+uvicorn
 pydantic
 unsloth
 torch
