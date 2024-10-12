@@ -1,4 +1,4 @@
-# LLaMA API with FastAPI, Celery, and Redis
+# LLaMA API with FastAPI, Celery, and Redis (СТАРАЯ ВЕРСИЯ)
 
 Представляет API для взаимодействия с моделью LLaMA, который использует FastAPI для обработки запросов, Celery для обработки фоновых задач, и Redis как брокер и хранилище результатов.
 
