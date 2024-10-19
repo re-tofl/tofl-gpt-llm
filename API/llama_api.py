@@ -29,12 +29,25 @@ class QueryModel(BaseModel):
 @app.post("/generate")
 async def generate_text(query: QueryModel):
     user_input = query.prompt
+    alpaca_prompt = """Ниже представлено задание, которое описывает задачу. Напишите ответ, который соответствующим образом завершает запрос.
+
+    ### Инструкция:
+    {}
+
+    ### Ответ:
+    {}"""
 
     try:
-        inputs = tokenizer([user_input], return_tensors="pt").to("cuda")
-        response = model.generate(**inputs, max_new_tokens=128, use_cache=True)
+        inputs = tokenizer(
+            [
+                alpaca_prompt.format(
+                    user_input,
+                    ""
+                )
+            ], return_tensors="pt").to("cuda")
+        response = model.generate(**inputs, max_new_tokens=256, use_cache=True)
         generated_text = tokenizer.batch_decode(response, skip_special_tokens=True)
-        return {"response": generated_text[0]}
+        return {"response": generated_text}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
