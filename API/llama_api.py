@@ -2,6 +2,16 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from unsloth import FastLanguageModel
 import torch
+from deep_translator import GoogleTranslator
+
+
+def translate_text(text, source_language, target_language):
+    try:
+        return GoogleTranslator(source=source_language, target=target_language).translate(text)
+    except Exception as e:
+        print(f"Error during translation: {e}")
+        return None
+
 
 app = FastAPI()
 
@@ -28,13 +38,13 @@ class QueryModel(BaseModel):
 # Маршрут для получения ответа от модели
 @app.post("/generate")
 async def generate_text(query: QueryModel):
-    user_input = query.prompt
-    alpaca_prompt = """Ниже представлено задание, которое описывает задачу. Напишите ответ, который соответствующим образом завершает запрос.
+    user_input = translate_text(query.prompt, source_language='ru', target_language='en')
+    alpaca_prompt = """Below is a task that describes the problem. Write an answer that completes the query appropriately.
 
-    ### Инструкция:
+    ### Instructions:
     {}
 
-    ### Ответ:
+    ### Answer:
     {}"""
 
     try:
@@ -47,7 +57,8 @@ async def generate_text(query: QueryModel):
             ], return_tensors="pt").to("cuda")
         response = model.generate(**inputs, max_new_tokens=256, use_cache=True)
         generated_text = tokenizer.batch_decode(response, skip_special_tokens=True)
-        return {"response": generated_text}
+        response = translate_text(generated_text[0], source_language='en', target_language='ru')
+        return {"response": response}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

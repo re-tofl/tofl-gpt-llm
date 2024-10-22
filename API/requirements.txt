@@ -3,3 +3,4 @@ uvicorn
 pydantic
 unsloth
 torch
+deep_translator
