@@ -1,17 +1,21 @@
 import requests
 import json
 
-API_URL = "http://127.0.0.1:8000/generate"
+API_URL = "http://127.0.0.1:8000/process"
 
 
 def send_request(prompt):
     headers = {"Content-Type": "application/json"}
-    data = {"prompt": prompt}
+    type = 0
+    data = {
+        "type": type,
+        "prompt": prompt
+    }
 
     try:
         response = requests.post(API_URL, headers=headers, data=json.dumps(data))
         if response.status_code == 200:
-            return response.json().get("response", "No response from model")
+            return response.json()
         else:
             return f"Error {response.status_code}: {response.text}"
     except Exception as e:
